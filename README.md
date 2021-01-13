@@ -1,81 +1,27 @@
-#include <iostream>
-#define N 9
-using namespace std;
-int grid[N][N] = {
-   {3, 0, 6, 5, 0, 8, 4, 0, 0},
-   {5, 2, 0, 0, 0, 0, 0, 0, 0},
-   {0, 8, 7, 0, 0, 0, 0, 3, 1},
-   {0, 0, 3, 0, 1, 0, 0, 8, 0},
-   {9, 0, 0, 8, 6, 3, 0, 0, 5},
-   {0, 5, 0, 0, 9, 0, 6, 0, 0},
-   {1, 3, 0, 0, 0, 0, 2, 5, 0},
-   {0, 0, 0, 0, 0, 0, 0, 7, 4},
-   {0, 0, 5, 2, 0, 6, 3, 0, 0}
-};
-bool isPresentInCol(int col, int num){ //check whether num is present in col or not
-   for (int row = 0; row < N; row++)
-      if (grid[row][col] == num)
-         return true;
-   return false;
-}
-bool isPresentInRow(int row, int num){ //check whether num is present in row or not
-   for (int col = 0; col < N; col++)
-      if (grid[row][col] == num)
-         return true;
-   return false;
-}
-bool isPresentInBox(int boxStartRow, int boxStartCol, int num){
-//check whether num is present in 3x3 box or not
-   for (int row = 0; row < 3; row++)
-      for (int col = 0; col < 3; col++)
-         if (grid[row+boxStartRow][col+boxStartCol] == num)
-            return true;
-   return false;
-}
-void sudokuGrid(){ //print the sudoku grid after solve
-   for (int row = 0; row < N; row++){
-      for (int col = 0; col < N; col++){
-         if(col == 3 || col == 6)
-            cout << " | ";
-         cout << grid[row][col] <<" ";
-      }
-      if(row == 2 || row == 5){
-         cout << endl;
-         for(int i = 0; i<N; i++)
-            cout << "---";
-      }
-      cout << endl;
-   }
-}
-bool findEmptyPlace(int &row, int &col){ //get empty location and update row and column
-   for (row = 0; row < N; row++)
-      for (col = 0; col < N; col++)
-         if (grid[row][col] == 0) //marked with 0 is empty
-            return true;
-   return false;
-}
-bool isValidPlace(int row, int col, int num){
-   //when item not found in col, row and current 3x3 box
-   return !isPresentInRow(row, num) && !isPresentInCol(col, num) && !isPresentInBox(row - row%3 ,
-col - col%3, num);
-}
-bool solveSudoku(){
-   int row, col;
-   if (!findEmptyPlace(row, col))
-      return true; //when all places are filled
-   for (int num = 1; num <= 9; num++){ //valid numbers are 1 - 9
-      if (isValidPlace(row, col, num)){ //check validation, if yes, put the number in the grid
-         grid[row][col] = num;
-         if (solveSudoku()) //recursively go for other rooms in the grid
-            return true;
-         grid[row][col] = 0; //turn to unassigned space when conditions are not satisfied
-      }
-   }
-   return false;
-}
-int main(){
-   if (solveSudoku() == true)
-      sudokuGrid();
-   else
-      cout << "No solution exists";
-}
+Sudoku Solver
+
+Sudoku:- It is a logic-based, combinational number-placement puzzle in which our objective is to fill a 9x9 grid/matrix and each of the nine 3x3 subgrids that compose the grid contain all of the digits from 1 to 9.
+
+But nowadays, many new sudoku have been developed which include alphabet along with the numbers.
+
+We are going to solve 9x9 grid sudoku for which we will use the algorithm of backtracking.
+
+Functions created/used in SudokuSolver.cpp:-
+
+⦁ bool UnassignedLocation(int SudokuMatrix[9][9], int &row, int &col):- Function to check whether the position/index is Assigned or Unassigned. If SudokuMatrix[row][col] is 0 then, this function will return true otherwise false.
+
+⦁ bool isSafe(int SudokuMatrix[9][9], int row, int col, int num):- Function to check whether the number is safe to assign at that index or not. Basically it is based upon three functions.
+
+⦁ bool NuminRow(int SudokuMatrix[9][9], int num, int row):- Function to check whether the number to be assigned is already present in that entire row or not. If number is there in that row then this functions return true otherwise false.
+
+⦁ bool NuminCol(int SudokuMatrix[9][9], int num, int col):- Function to check whether the number to be assigned is already present in that entire column or not. If number is there in that column then this functions return true otherwise false.
+
+⦁ bool NuminBox(int SudokuMatrix[9][9], int num, int StartRow, int StartCol):- Function to check whether the number to be assigned is already present in that entire 3 X 3 box or not. If number is there in that entire box then this functions return true otherwise false.
+
+If all the above 3 functions returns false then this function returns true otherwise false.
+
+⦁ bool SudokuSolve(int SudokuMatrix[9][9]):- Function to solve Sudoku. It checks all the necessary coditions till there is any unassigned value in grid and in the last returns value as true or false.
+
+⦁ void printSudokuMatrix(int SudokuMatrix[9][9]):- Function to print SudokuMatrix
+
+In main function, values of each row and column has already been assigned in which 0 denotes as unassigned location. If SudokuSolve(SudokuMatrix) is true then Solved Sudoku will be printed using printSudokuMatrix(SudokuMatrix) function. If there is no solution of Sudoku then, a message "No Solution of this Sudoku Exists" dispalyed on the output screen.
